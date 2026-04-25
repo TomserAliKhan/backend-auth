@@ -1,0 +1,65 @@
+BACKEND API - QUICK REQUEST BODY REFERENCE
+===========================================
+
+1. POST /register
+   req.body: { name, email, password, isAdmin }
+
+2. POST /login
+   req.body: { email, password }
+
+3. POST /verify2faOtp
+   req.body: { email, otp }
+
+4. POST /resend2faOtp
+   req.body: { }
+
+5. POST /getVerifyEmailOTP
+   req.body: { }
+
+6. POST /verifyEmailOTP
+   req.body: { otp }
+
+7. POST /resendVerifyEmailOTP
+   req.body: { }
+
+8. POST /changePassword
+   req.body: { oldPassword, newPassword, conformNewPassword }
+
+9. POST /forgotPassword
+   req.body: { email }
+
+10. POST /resendForgotPasswordOTP
+    req.body: { email }
+
+11. POST /resetPassword
+    req.body: { email, otp, password, conformPassword }
+
+12. GET /profile
+    req.body: { }
+
+13. POST /profile
+    req.body: { name } OR { email }
+
+14. POST /changeEmail
+    req.body: { email, otp }
+
+15. POST /2faEnable
+    req.body: { }
+
+16. POST /2faDisable
+    req.body: { }
+
+17. POST /logout
+    req.body: { }
+
+18. POST /logoutAllDevice
+    req.body: { }
+
+AUTHENTICATION:
+✅ = Requires Access Token Header
+❌ = No Authentication Required
+
+1. ❌  |  2. ❌  |  3. ✅  |  4. ✅  |  5. ✅
+6. ✅  |  7. ✅  |  8. ✅  |  9. ❌  |  10. ❌
+11. ❌ |  12. ✅ |  13. ✅ |  14. ✅ |  15. ✅
+16. ✅ |  17. ✅ |  18. ✅ |
