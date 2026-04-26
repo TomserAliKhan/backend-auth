@@ -5,7 +5,7 @@ exports.setAccessToken=(res,accessToken)=>{
        {
         httpOnly:true,
         secure:true,
-        maxAge:60*1000
+        maxAge:2*24*60*60*1000
        }
     );
 }
