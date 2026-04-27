@@ -15,7 +15,7 @@ const resendOtp= asyncHandler(async(req,res,next)=>{
      switch(type){
          case "email-verification":
              return resendVerifyEmailOTP(req,res,next);
-         case "2fa-varification":
+         case "2fa-verification":
              return resend2FAOTP(req,res,next);
          case "forgot-password":
              return resendForgotPasswordOTP(req,res,next) ;

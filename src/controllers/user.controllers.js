@@ -343,10 +343,19 @@ exports.resetPassword = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiRespose(200, "password reset successfully"));
 });
 //resend forgot password OTP
-exports.resendForgotPasswordOTP = asyncHandler(async (req, res) => {
-  const { email } = req.body;
-  if (!email) {
+exports.resendForgotPasswordOTP = asyncHandler(async (req, res,next) => {
+  
+  let email;
+  
+   if (req.body.email) {
+    email = req.body.email;
+  } else {
     throw new ApiError(400, "email is required");
+  }
+  
+
+  if (!email.includes("@") || !email.includes(".")) {
+    throw new ApiError(400, "email is not valid");
   }
   const user = await userModel.findOne({ email });
   if (!user) {
@@ -360,6 +369,8 @@ exports.resendForgotPasswordOTP = asyncHandler(async (req, res) => {
     type: "forgot",
     userName: user.name,
   });
+
+  
   await sendEmail({
     to: user.email,
     subject: template.subject,
@@ -378,7 +389,9 @@ exports.resendVerifyEmailOTP = asyncHandler(async (req, res,next) => {
   if (!user) {
     throw new ApiError(404, "user not found");
   }
- 
+   if (!user.emailVerificationOTP || user.emailVerificationOTPExpires < Date.now()) {
+    throw new ApiError(400, "No valid OTP found, pleasesend  again");
+  }
   const template = getOtpEmailTemplate({
     otp: user.emailVerificationOTP,
     type: "verify",
@@ -391,7 +404,7 @@ exports.resendVerifyEmailOTP = asyncHandler(async (req, res,next) => {
   });
   res
     .status(200)
-    .json(new ApiRespose(200, user, "email OTP resent successfully"));
+    .json(new ApiRespose(200, user.email,"email OTP resent successfully"));
 });
 //resend 2FA OTP
 exports.resend2FAOTP = asyncHandler(async (req, res,next) => {
@@ -403,7 +416,7 @@ exports.resend2FAOTP = asyncHandler(async (req, res,next) => {
     throw new ApiError(400, "2FA not enabled");
   }
   if (!user.twoFactorOTP || user.twoFactorOTPExpires < Date.now()) {
-    throw new ApiError(400, "No valid OTP found, please login again");
+    throw new ApiError(400, "No valid OTP found, please send again");
   }
   const template = getOtpEmailTemplate({
     otp: user.twoFactorOTP,
@@ -540,8 +553,8 @@ exports.updateUserData = asyncHandler(async (req, res) => {
       .json(
         new ApiRespose(
           200,
-          existingUserWithEmail.name,
-          `email change OTP sent successfully to ${existingUserWithEmail.email}`,
+          existingUserWithEmail.email,
+          `email change OTP sent successfully `,
         ),
       );
   });
